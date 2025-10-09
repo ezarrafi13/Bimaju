@@ -91,42 +91,32 @@
                     <!-- Riwayat Transaksi -->
                     <div class="bg-white shadow rounded-lg p-6">
                         <h2 class="text-lg font-semibold flex items-center gap-2 mb-2">📜 Riwayat Transaksi</h2>
-                        <p class="text-sm text-gray-600 mb-4">Lihat semua transaksi dan unduh invoice</p>
+                        <p class="text-sm text-gray-600 mb-4">Lihat transaksi terakhir</p>
 
                         <div class="space-y-3">
-                            <!-- Item Transaksi -->
-                            <div class="flex items-center justify-between border rounded-lg p-4">
-                                <div>
-                                    <p class="font-medium">Perpanjang Langganan Pro</p>
-                                    <p class="text-xs text-gray-500">1 Sept 2025</p>
+                            @forelse($recentTransactions as $transaction)
+                                <div class="flex items-center justify-between border rounded-lg p-4">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ $transaction->desc }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ \Carbon\Carbon::parse($transaction->date)->format('d M Y') }}
+                                            @if($transaction->note)
+                                                <span class="text-gray-400">• {{ $transaction->note }}</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-right">
+                                        <p class="font-medium {{ $transaction->type === 'Income' ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ $transaction->type === 'Income' ? '+' : '-' }}Rp{{ number_format($transaction->amount, 0, ',', '.') }}
+                                        </p>
+                                        <span class="px-2 py-0.5 text-xs bg-sky-100 text-sky-600 rounded-full">
+                                            {{ __($transaction->type) }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <p class="font-medium">Rp100.000</p>
-                                    <span class="px-2 py-0.5 text-xs bg-sky-100 text-sky-600 rounded-full">Sukses</span>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between border rounded-lg p-4">
-                                <div>
-                                    <p class="font-medium">Pembelian Resep Premium</p>
-                                    <p class="text-xs text-gray-500">15 Ags 2025</p>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <p class="font-medium">Rp25.000</p>
-                                    <span class="px-2 py-0.5 text-xs bg-sky-100 text-sky-600 rounded-full">Sukses</span>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between border rounded-lg p-4">
-                                <div>
-                                    <p class="font-medium">Upgrade ke Pro Plan</p>
-                                    <p class="text-xs text-gray-500">1 Ags 2025</p>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <p class="font-medium">Rp75.000</p>
-                                    <span class="px-2 py-0.5 text-xs bg-sky-100 text-sky-600 rounded-full">Sukses</span>
-                                </div>
-                            </div>
+                            @empty
+                                <p class="text-sm text-gray-500">{{ __('No transactions yet. Start tracking from the Finance page.') }}</p>
+                            @endforelse
                         </div>
                     </div>
 
@@ -158,7 +148,7 @@
                             <h2 class="text-lg font-semibold text-red-600 flex items-center gap-2 mb-4">🗑 Zona Berbahaya</h2>
                             <p class="text-sm text-gray-600 mb-4">Tindakan yang tidak dapat dibatalkan</p>
 
-                            <form method="POST" action="{{ route('account.delete') }}">
+                            <form method="POST" action="{{ route('account.delete') }}" onsubmit="return confirm(@js(__('Are you sure you want to delete your account? This action cannot be undone.')));">
                                 @csrf
                                 @method('DELETE')
                                 <button class="w-full px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 flex items-center gap-2">

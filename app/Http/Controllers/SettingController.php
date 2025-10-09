@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,8 +21,13 @@ class SettingController extends Controller
         ];
 
         $currentLocale = $user->preferred_locale ?? config('app.locale');
+        $recentTransactions = Transaction::where('user_id', $user->id)
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
-        return view('setting', compact('availableLocales', 'currentLocale'));
+        return view('setting', compact('availableLocales', 'currentLocale', 'recentTransactions'));
     }
 
     /**
@@ -44,4 +50,3 @@ class SettingController extends Controller
             ->with('success', __('Language preference updated.'));
     }
 }
-
