@@ -63,9 +63,9 @@ class RecipeController extends Controller
     /**
      * Proses pembelian resep
      */
-    public function buy(Recipe $recipe)
+    public function buy(Request $request, Recipe $recipe)
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         // Cek apakah sudah dibeli
         $alreadyBought = Transaction::where('user_id', $user->id)
@@ -74,7 +74,12 @@ class RecipeController extends Controller
             ->exists();
 
         if ($alreadyBought) {
-            return response()->json(['message' => 'Resep sudah dibeli sebelumnya'], 400);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Resep sudah dibeli sebelumnya'], 400);
+            }
+
+            $redirect = $request->input('redirect_to', route('recipes.index'));
+            return redirect($redirect)->with('error', 'Resep sudah dibeli sebelumnya');
         }
 
         Transaction::create([
@@ -86,6 +91,15 @@ class RecipeController extends Controller
             'note'    => 'recipe_id:' . $recipe->id,
         ]);
 
-        return response()->json(['message' => 'Resep berhasil dibeli']);
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Resep berhasil dibeli']);
+        }
+
+        $redirect = $request->input('redirect_to');
+        if ($redirect) {
+            return redirect($redirect)->with('success', 'Resep berhasil dibeli');
+        }
+
+        return back()->with('success', 'Resep berhasil dibeli');
     }
 }

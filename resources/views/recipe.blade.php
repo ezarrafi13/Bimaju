@@ -34,9 +34,22 @@
                 <p class="text-gray-600 text-center mb-6">Temukan inspirasi menu terbaik untuk bisnismu</p>
 
                 <!-- Tabs -->
+                @php
+                    $activeTab = request('tab', 'all');
+                @endphp
                 <div class="flex justify-center mb-6">
-                    <button id="tab-all" class="tab-btn px-6 py-2 bg-cyan-500 text-white rounded-l-lg">Semua Resep</button>
-                    <button id="tab-bought" class="tab-btn px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-r-lg">Resep Dibeli</button>
+                    <button
+                        id="tab-all"
+                        class="tab-btn px-6 py-2 rounded-l-lg {{ $activeTab === 'all' ? 'bg-cyan-500 text-white' : 'bg-gray-100 hover:bg-gray-200' }}"
+                    >
+                        Semua Resep
+                    </button>
+                    <button
+                        id="tab-bought"
+                        class="tab-btn px-6 py-2 rounded-r-lg {{ $activeTab === 'bought' ? 'bg-cyan-500 text-white' : 'bg-gray-100 hover:bg-gray-200' }}"
+                    >
+                        Resep Dibeli
+                    </button>
                 </div>
 
                 <!-- Search -->
@@ -93,7 +106,7 @@
                                             </button>
                                             <button onclick="buyRecipe('{{ $recipe->id }}')"
                                                     class="flex-1 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600">
-                                                Beli
+                                                Soon
                                             </button>
                                         @endif
                                     </div>
@@ -112,6 +125,7 @@
 </div>
 
 <!-- Modals -->
+<div id="recipe-modals">
 @foreach ($recipes as $recipe)
     @if (in_array($recipe->id, $boughtRecipeIds ?? []))
         <!-- ✅ UNLOCKED -->
@@ -171,20 +185,26 @@
                 </div>
 
                 <div class="border border-dashed p-4 text-center text-gray-500 mb-4">
-                    🔒 Beli resep untuk melihat detail lengkap <br>
+                    🔒 Available Soon<br>
                     (termasuk bahan, langkah, dan tips rahasia)
                 </div>
 
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-lg text-cyan-600">{{ $recipe->price }}</span>
                     <button onclick="buyRecipe('{{ $recipe->id }}')" class="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600">
-                        Beli Sekarang
+                        Available Soon
                     </button>
                 </div>
             </div>
         </div>
     @endif
 @endforeach
+</div>
+
+<form id="buy-recipe-form" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="redirect_to" value="{{ route('recipes.index', ['tab' => 'bought']) }}">
+</form>
 
 <script>
     function openModal(id) {
@@ -199,7 +219,8 @@
 
 <script>
     let currentCategory = "Semua";
-    let currentTab = "all";
+    let currentTab = {{ $activeTab === 'bought' ? "'bought'" : "'all'" }};
+    const purchasedUrl = "{{ route('recipes.index', ['tab' => 'bought']) }}";
 
     // === TAB ===
     document.getElementById("tab-all").addEventListener("click", function () {
@@ -243,33 +264,75 @@
     function fetchData() {
         let search = document.getElementById("search-input").value;
 
-        fetch(`{{ route('recipes.index') }}?search=${search}&category=${currentCategory}&tab=${currentTab}`, {
+        fetch(`{{ route('recipes.index') }}?search=${encodeURIComponent(search)}&category=${encodeURIComponent(currentCategory)}&tab=${currentTab}`, {
             headers: { "X-Requested-With": "XMLHttpRequest" }
         })
             .then(res => res.text())
             .then(html => {
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(html, "text/html");
-                let newContent = doc.querySelector("#recipe-list").innerHTML;
-                document.getElementById("recipe-list").innerHTML = newContent;
+                let list = doc.querySelector("#recipe-list");
+                if (list) {
+                    document.getElementById("recipe-list").innerHTML = list.innerHTML;
+                }
+                let modals = doc.querySelector("#recipe-modals");
+                if (modals) {
+                    document.getElementById("recipe-modals").innerHTML = modals.innerHTML;
+                }
             });
+    }
+
+    function submitBuyForm(id) {
+        const form = document.getElementById("buy-recipe-form");
+        const redirectInput = form.querySelector('input[name="redirect_to"]');
+        if (redirectInput) {
+            redirectInput.value = purchasedUrl;
+        }
+        form.action = `/recipes/${id}/buy`;
+        form.submit();
     }
 
     // === BELI ===
     function buyRecipe(id) {
+        if (!window.fetch) {
+            submitBuyForm(id);
+            return;
+        }
+
         fetch(`/recipes/${id}/buy`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({})
         })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                fetchData(); // refresh agar tombol berubah jadi "Lihat Resep"
+            .then(async res => {
+                const contentType = res.headers.get('content-type') || '';
+                const data = contentType.includes('application/json')
+                    ? await res.json().catch(() => ({}))
+                    : {};
+
+                if (!res.ok) {
+                    throw new Error(data.message || 'Gagal membeli resep. Silakan coba lagi.');
+                }
+
+                if (!contentType.includes('application/json')) {
+                    // fallback jika respons bukan JSON (misal redirect)
+                    submitBuyForm(id);
+                    return;
+                }
+
+                window.location.href = purchasedUrl;
+                return;
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                submitBuyForm(id);
+            });
     }
 </script>
 

@@ -30,7 +30,6 @@
                 <div class="bg-white p-4 rounded-2xl border border-gray-200 space-y-4">
                     <div class="flex items-start justify-between">
                         <h3 class="text-lg font-semibold">{{ __('Learning Progress') }}</h3>
-                        <p class="text-sm text-gray-500">{{ __('Your journey to success') }}</p>
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -61,6 +60,12 @@
                                 {{ __('Summary for :month', ['month' => isset($currentDate) ? $currentDate->translatedFormat('F Y') : now()->translatedFormat('F Y')]) }}
                             </p>
                         </div>
+                        <a href="{{ route('finance.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-[#12B6D3] hover:text-[#0f99b1]">
+                            {{ __('View details') }}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
                     </div>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
@@ -94,14 +99,14 @@
                     </div>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold text-[#12B6D3]">24</span>
+                            <span class="text-2xl font-bold text-[#12B6D3]">0</span>
                             {{-- Icon ChefHat --}}
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#12B6D3]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 3a5 5 0 00-5 5 5 5 0 0010 0 5 5 0 00-5-5z" /><path d="M6 21h12v-6H6v6z" /></svg>
                         </div>
                         <p class="text-sm text-gray-500">Recipes purchased</p>
                         <div class="flex gap-2">
                             <button class="flex-1 py-2 text-white bg-[#12B6D3] rounded-lg text-sm">
-                                <a href="/recipes">Buy More</a>
+                                <a href="/recipes">{{ __('Buy More') }}</a>
                             </button>
                         </div>
                     </div>
@@ -136,7 +141,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-2xl font-bold text-[#12B6D3]">156</span>
-                        👥
+                        <i class="fa fa-users text-2xl text-[#12B6D3]" aria-hidden="true"></i>
                     </div>
                     <div class="space-y-2 text-sm">
                         <div>
@@ -170,21 +175,21 @@
 
     <!-- Ask Advisor -->
     <a href="{{ route('consultations.index') }}" class="border rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-gray-100 transition">
-      <span class="text-xl">💬</span>
+      <i class="fa fa-comments text-2xl text-[#12B6D3]" aria-hidden="true"></i>
       <h4 class="font-semibold">{{ __('Ask Advisor') }}</h4>
       <p class="text-sm text-gray-500">{{ __('Get business advice') }}</p>
     </a>
 
     <!-- Buy Recipe -->
     <a href="{{ route('recipes.index') }}" class="border rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-gray-100 transition">
-      <span class="text-xl">🛒</span>
+      <i class="fa fa-cutlery text-2xl text-[#12B6D3]" aria-hidden="true"></i>
       <h4 class="font-semibold">{{ __('Buy Recipe') }}</h4>
       <p class="text-sm text-gray-500">{{ __('Discover new recipes') }}</p>
     </a>
 
     <!-- Join Discussion -->
     <a href="{{ route('community.index') }}" class="border rounded-lg p-4 flex flex-col items-center justify-center text-center hover:bg-gray-100 transition">
-      <span class="text-xl">👥</span>
+      <i class="fa fa-users text-2xl text-[#12B6D3]" aria-hidden="true"></i>
       <h4 class="font-semibold">{{ __('Join Discussion') }}</h4>
       <p class="text-sm text-gray-500">{{ __('Connect with community') }}</p>
     </a>
@@ -232,9 +237,9 @@
                     </div>
                     @php
                         $courses = [
-                            ['title' => __('Digital Marketing Basics'), 'progress' => 0, 'difficulty' => __('Beginner')],
-                            ['title' => __('Food Cost Management'), 'progress' => 25, 'difficulty' => __('Intermediate')],
                             ['title' => __('Customer Service Excellence'), 'progress' => 0, 'difficulty' => __('Beginner')],
+                            ['title' => __('Supply Chain Management'), 'progress' => 0, 'difficulty' => __('Intermediate')],
+                            ['title' => __('Food Costing and Pricing'), 'progress' => 0, 'difficulty' => __('Beginner')],
                         ];
                     @endphp
                     @foreach($courses as $course)

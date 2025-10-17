@@ -6,28 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bimaju</title>
     @vite('resources/css/app.css')
+    <style>
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
     {{-- Navbar --}}
-    <header class="flex items-center justify-between px-32 py-6">
-        <div class="text-2xl font-bold text-cyan-600">Bimaju</div>
+     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-6 md:px-16 xl:px-32">
+        <div class="text-2xl font-bold text-cyan-600 sm:text-left text-center w-full sm:w-auto">Bimaju</div>
 
         <nav class="hidden md:flex space-x-8 font-medium">
-            <a href="#" class="hover:text-cyan-600">Features</a>
-            <a href="#" class="hover:text-cyan-600">Pricing</a>
-            <a href="#" class="hover:text-cyan-600">FAQ</a>
-            <a href="#" class="hover:text-cyan-600">Contact</a>
+            <a href="#features" class="hover:text-cyan-600">Features</a>
+            <a href="#pricing" class="hover:text-cyan-600">Pricing</a>
+            <a href="#faq" class="hover:text-cyan-600">FAQ</a>
+            <a href="#contact" class="hover:text-cyan-600">Contact</a>
         </nav>
 
-        <div class="flex space-x-4">
-            <a href="/login" class="px-5 py-2 border border-cyan-500 rounded-full text-cyan-500 hover:bg-cyan-500 hover:text-white transition">Login</a>
-            <a href="/register" class="px-5 py-2 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition">Get Started</a>
-        </div>
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+            <a href="/login" class="px-5 py-2 border border-cyan-500 rounded-full text-cyan-500 hover:bg-cyan-500 hover:text-white transition text-center">Login</a>
+            <a href="/register" class="px-5 py-2 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition text-center">Get Started</a>
     </header>
 
     {{-- Hero Section --}}
-    <section class="flex flex-col-reverse md:flex-row items-center justify-between px-32 py-16">
+    <section id="hero" class="flex flex-col-reverse md:flex-row items-center justify-between px-32 py-16">
         {{-- Left Side --}}
         <div class="max-w-xl space-y-6">
             <h1 class="text-5xl font-bold leading-tight">
@@ -40,8 +42,8 @@
             </p>
 
             <div class="flex space-x-4">
-                <a href="#" class="px-6 py-3 bg-cyan-500 text-white font-medium rounded-full shadow hover:bg-cyan-600 transition">Start Free</a>
-                <a href="#" class="px-6 py-3 border border-cyan-500 text-cyan-500 font-medium rounded-full hover:bg-cyan-500 hover:text-white transition">See Plans</a>
+                <a href="#features" class="px-6 py-3 bg-cyan-500 text-white font-medium rounded-full shadow hover:bg-cyan-600 transition">Start Free</a>
+                <a href="#pricing" class="px-6 py-3 border border-cyan-500 text-cyan-500 font-medium rounded-full hover:bg-cyan-500 hover:text-white transition">See Plans</a>
             </div>
 
             <div class="flex items-center space-x-6 pt-6 text-gray-500">
@@ -68,7 +70,7 @@
         </div>
     </section>
     {{-- Section 2: Features --}}
-<section class="px-10 py-20 bg-white text-center">
+<section id="features" class="px-10 py-20 bg-white text-center">
     {{-- Heading --}}
     <div class="max-w-3xl mx-auto mb-12">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">
@@ -130,7 +132,7 @@
     </div>
 </section>
 {{-- Section 3: How It Works --}}
-<section class="px-10 py-20 bg-gray-50 text-center">
+<section id="how-it-works" class="px-10 py-20 bg-gray-50 text-center">
     {{-- Heading --}}
     <div class="max-w-2xl mx-auto mb-16">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
@@ -201,7 +203,7 @@
 
     </div>
 </section>
-<section class="py-16 bg-white">
+<section id="pricing" class="py-16 bg-white">
     <div class="max-w-6xl mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Choose Your Plan</h2>
         <p class="text-gray-500 mb-12">
@@ -310,11 +312,44 @@
 
         <p class="text-gray-400 text-sm mt-8">
             All plans include secure payment processing and data protection <br>
-            <a href="#" class="text-cyan-500 underline">Need a custom solution? Contact us</a>
+            <a href="#contact" class="text-cyan-500 underline">Need a custom solution? Contact us</a>
         </p>
     </div>
 </section>
-<section class="py-16 bg-gray-50">
+<section id="faq" class="py-16 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h2>
+            <p class="text-gray-500 text-lg">
+                Jawaban singkat untuk pertanyaan yang sering ditanyakan oleh pelaku UMKM F&amp;B.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <details class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <summary class="font-semibold text-lg text-gray-800 cursor-pointer">Apakah Bimaju gratis untuk digunakan?</summary>
+                <p class="text-gray-600 mt-3">
+                    Kamu bisa mulai dengan paket Basic yang gratis selamanya. Saat membutuhkan fitur lanjutan,
+                    tinggal upgrade ke paket berbayar kapan saja.
+                </p>
+            </details>
+            <details class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <summary class="font-semibold text-lg text-gray-800 cursor-pointer">Bagaimana cara mengakses resep premium?</summary>
+                <p class="text-gray-600 mt-3">
+                    Setelah mendaftar, buka tab Resep dan pilih resep premium favoritmu. Pembayaran dilakukan langsung
+                    di aplikasi dan resep akan tersimpan di koleksi kamu.
+                </p>
+            </details>
+            <details class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <summary class="font-semibold text-lg text-gray-800 cursor-pointer">Apakah ada support jika saya mengalami kendala?</summary>
+                <p class="text-gray-600 mt-3">
+                    Tentu! Tim kami siap membantu lewat email dan konsultasi. Pengguna paket berbayar juga memperoleh prioritas support.
+                </p>
+            </details>
+        </div>
+    </div>
+</section>
+<section id="testimonials" class="py-16 bg-gray-50">
     <div class="max-w-6xl mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">What Our Users Say</h2>
         <p class="text-gray-500 mb-12">
@@ -388,6 +423,34 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+<section id="contact" class="py-16 bg-white">
+    <div class="max-w-5xl mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Butuh Bantuan Eksklusif?</h2>
+            <p class="text-gray-600 text-lg mb-6">
+                Ceritakan tantangan bisnismu pada tim Bimaju. Kami siap membantu melalui konsultasi,
+                demo produk, atau paket kustom untuk kebutuhan usaha F&amp;B kamu.
+            </p>
+            <div class="space-y-3 text-gray-700">
+                <p><span class="font-semibold text-cyan-600">Email:</span> support@bimaju.id</p>
+                <p><span class="font-semibold text-cyan-600">Whatsapp:</span> +62 812-3456-7890</p>
+                <p><span class="font-semibold text-cyan-600">Jam Operasional:</span> Senin - Jumat, 09.00 - 18.00 WIB</p>
+            </div>
+        </div>
+        <div class="bg-gray-50 border border-dashed border-cyan-200 rounded-2xl p-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Kirim Pesan Cepat</h3>
+            <p class="text-gray-500 mb-6">Tinggalkan email kamu dan kami akan hubungi kembali dalam 1x24 jam.</p>
+            <form class="space-y-4">
+                <input type="text" placeholder="Nama kamu" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="email" placeholder="Email bisnis" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <textarea rows="4" placeholder="Ceritakan kebutuhanmu" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                <button type="button" class="w-full bg-cyan-500 text-white font-semibold py-3 rounded-lg hover:bg-cyan-600 transition">
+                    Kirim
+                </button>
+            </form>
         </div>
     </div>
 </section>

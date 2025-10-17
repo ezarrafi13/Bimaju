@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\SettingController;
+use App\Models\Recipe;
 use App\Models\Transaction;
 use App\Models\Module;
 use Illuminate\Support\Facades\Route;
@@ -75,7 +76,9 @@ Route::get('/subscription', function () {
 })->middleware(['auth', 'verified']);
 
 Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index')->middleware(['auth', 'verified']);
-Route::post('/recipes/{recipe}/buy', [RecipeController::class, 'buy'])->name('recipes.buy');
+Route::post('/recipes/{recipe}/buy', [RecipeController::class, 'buy'])
+    ->name('recipes.buy')
+    ->middleware(['auth', 'verified']);
 
 Route::get('/dashboard', function () {
     $userId = auth()->id();
@@ -118,6 +121,19 @@ Route::get('/dashboard', function () {
         ->take(3)
         ->get();
 
+    $purchasedRecipeIds = Transaction::where('user_id', $userId)
+        ->where('type', 'Expense')
+        ->where('note', 'like', 'recipe_id:%')
+        ->pluck('note')
+        ->map(fn ($note) => (int) str_replace('recipe_id:', '', $note))
+        ->filter()
+        ->unique()
+        ->values();
+
+    $recipePurchasedCount = $purchasedRecipeIds->isEmpty()
+        ? 0
+        : Recipe::whereIn('id', $purchasedRecipeIds)->count();
+
     return view('dashboard', compact(
         'financeIncome',
         'financeExpense',
@@ -126,7 +142,8 @@ Route::get('/dashboard', function () {
         'learningCompletedModules',
         'learningRemainingModules',
         'learningProgressPercent',
-        'recentTransactions'
+        'recentTransactions',
+        'recipePurchasedCount'
     ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
